@@ -165,3 +165,6 @@ terraform.rc
 **/airflow-scheduler*
 **/airflow.db
 **/airflow/logs
+data/**
+!data/.gitkeep
+!data/README.md
