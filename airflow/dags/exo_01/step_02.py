@@ -17,6 +17,7 @@ default_args = {
     "start_date": datetime(2023, 1, 1),
 }
 
+
 def save_dataframe_to_postgres():
     # Dados de exemplo
     df = pd.read_csv(
@@ -33,6 +34,7 @@ def save_dataframe_to_postgres():
 
     print("Dados salvos com sucesso no PostgreSQL!")
 
+
 with DAG(
     dag_id="step_02",
     description="Step 02",
@@ -43,14 +45,14 @@ with DAG(
 
     # Tarefa para criar a tabela no PostgreSQL
     create_table = PostgresOperator(
-        task_id='create_table_in_postgres',
-        postgres_conn_id='study_postgres',
+        task_id="create_table_in_postgres",
+        postgres_conn_id="study_postgres",
         sql="""
         CREATE TABLE IF NOT EXISTS example (
             coluna1 INTEGER,
             coluna2 TEXT
         );
-        """
+        """,
     )
 
     save_data_task = PythonOperator(
@@ -58,5 +60,3 @@ with DAG(
     )
 
     create_table >> save_data_task
-
-

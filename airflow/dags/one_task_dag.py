@@ -22,7 +22,6 @@ with DAG(
     tags=["fabio"],
 ) as dag:
 
-
     task1 = BashOperator(
         task_id="one_task",
         bash_command='mkdir -p /workspaces/study_airflow/data/ && echo "hello, world!" > /workspaces/study_airflow/data/create-this-file.txt',

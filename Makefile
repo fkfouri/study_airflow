@@ -20,3 +20,8 @@ conn:
 
 stop:
 	sh ./scripts/stop_airflow.sh
+
+
+lint:
+	ruff check . --fix
+	black .
