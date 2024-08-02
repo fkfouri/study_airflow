@@ -161,3 +161,7 @@ terraform.rc
 *.lock
 
 
+**/airflow-webserver*
+**/airflow-scheduler*
+**/airflow.db
+**/airflow/logs

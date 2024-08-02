@@ -5,10 +5,19 @@ description = ""
 authors = ["fabio.kfouri <kfouri.fabio@gmail.com>"]
 readme = "README.md"
 
-[tool.poetry.dependencies]
-python = "^3.11"
-
-
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+taskipy = "^1.13.0"
+
+
+
+
+[tool.taskipy.tasks]
+pre_lint = { cmd = "echo 'Black' && black .", help = "apply the black linter"}
+install = { cmd = "pip install 'apache-airflow[postgres]==2.9.3' --constraint 'https://raw.githubusercontent.com/apache/airflow/constraints-2.9.3/constraints-3.8.txt'", help = "install apache-airflow"}
+
+start = { cmd = "airflow webserver -D", help = "start the airflow webserver"}
