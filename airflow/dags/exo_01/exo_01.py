@@ -24,13 +24,13 @@ with DAG(
     tags=["fabio"],
 ) as dag:
 
-    t00 = BashOperator(
+    create_path = BashOperator(
         task_id="create_path",
         bash_command="mkdir -p /workspaces/study_airflow/data",
         dag=dag,
     )
 
-    t10 = BashOperator(
+    extract_task = BashOperator(
         task_id="extract_task",
         bash_command=(
             "wget"
@@ -51,9 +51,9 @@ with DAG(
         generic_type_df.to_csv('/workspaces/study_airflow/data/orchestrated/airflow-transform-data.csv', index=False)
 
 
-    t20 = PythonOperator(
+    transform_task = PythonOperator(
       task_id='transform_task',
       python_callable=transform_data,
       dag=dag)
 
-    t00 >> t10 >> t20
+    create_path >> extract_task >> transform_task
