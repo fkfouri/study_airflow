@@ -3,6 +3,7 @@ help:
 
 install:
 	sh ./scripts/install_airflow.sh
+	-sh ./scripts/setup-postgres.sh 
 
 start:
 	sh ./scripts/run_airflow.sh
