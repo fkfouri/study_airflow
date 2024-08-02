@@ -1,6 +1,10 @@
 from airflow import DAG
+from airflow.operators.python import PythonOperator
 from airflow.providers.postgres.operators.postgres import PostgresOperator
 from datetime import datetime
+import pandas as pd
+from os import getenv
+from sqlalchemy import create_engine
 
 # Defina o DAG
 default_args = {
@@ -13,6 +17,22 @@ default_args = {
     "start_date": datetime(2023, 1, 1),
 }
 
+def save_dataframe_to_postgres():
+    # Dados de exemplo
+    df = pd.read_csv(
+        "/workspaces/study_airflow/data/orchestrated/airflow-transform-data.csv"
+    )
+
+    # Conectar ao PostgreSQL
+    engine = create_engine(
+        f"postgresql+psycopg2://{getenv('POSTGRES_USER')}:{getenv('POSTGRES_PASSWORD')}@{getenv('POSTGRES_HOST')}:{getenv('POSTGRES_PORT')}/study"
+    )
+
+    # Salvar o DataFrame na tabela 'minha_tabela'
+    df.to_sql("minha_tabela", engine, if_exists="replace", index=False)
+
+    print("Dados salvos com sucesso no PostgreSQL!")
+
 with DAG(
     dag_id="exo_02",
     description="Exo 02",
@@ -22,37 +42,21 @@ with DAG(
 ) as dag:
 
     # Tarefa para criar a tabela no PostgreSQL
-    create_database = PostgresOperator(
-        task_id='create_database',
+    create_table = PostgresOperator(
+        task_id='create_table_in_postgres',
         postgres_conn_id='study_postgres',
         sql="""
-        CREATE DATABASE study;
+        CREATE TABLE IF NOT EXISTS example (
+            coluna1 INTEGER,
+            coluna2 TEXT
+        );
         """
     )
 
-    # # Tarefa para criar a tabela no PostgreSQL
-    # create_table = PostgresOperator(
-    #     task_id='create_table_in_postgres',
-    #     postgres_conn_id='my_postgres_conn_id',
-    #     sql="""
-    #     CREATE TABLE IF NOT EXISTS minha_tabela (
-    #         coluna1 INTEGER,
-    #         coluna2 TEXT
-    #     );
-    #     """
-    # )
+    save_data_task = PythonOperator(
+        task_id="save_data_to_postgres", python_callable=save_dataframe_to_postgres
+    )
 
-    # # Tarefa para inserir dados na tabela
-    # insert_data = PostgresOperator(
-    #     task_id='insert_data_to_postgres',
-    #     postgres_conn_id='my_postgres_conn_id',
-    #     sql="""
-    #     INSERT INTO minha_tabela (coluna1, coluna2) VALUES
-    #     (1, 'a'),
-    #     (2, 'b'),
-    #     (3, 'c');
-    #     """
-    # )
+    create_table >> save_data_task
 
-    # # Defina a ordem das tarefas
-    # create_database >> create_table >> insert_data
+

@@ -4,12 +4,13 @@ help:
 install:
 	sh ./scripts/install_airflow.sh
 	-sh ./scripts/setup-postgres.sh 
+	make conn
 
 start:
 	sh ./scripts/run_airflow.sh
 
 conn:
-	airflow connections add 'study_postgres' \
+	-airflow connections add 'study_postgres' \
 		--conn-type 'postgres' \
 		--conn-host '${POSTGRES_HOST}' \
 		--conn-schema '${POSTGRES_DB}' \

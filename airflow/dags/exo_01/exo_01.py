@@ -1,4 +1,5 @@
 """One Task DAG"""
+
 import os
 import pandas as pd
 from datetime import datetime, date
@@ -45,15 +46,16 @@ with DAG(
         today = date.today()
 
         df = pd.read_csv("/workspaces/study_airflow/data/top-level-domain-names.csv")
-        generic_type_df = df[df['Type'] == 'generic']
-        generic_type_df['Date'] = today.strftime('%Y-%m-%d')
-        os.makedirs('/workspaces/study_airflow/data/orchestrated/', exist_ok=True)
-        generic_type_df.to_csv('/workspaces/study_airflow/data/orchestrated/airflow-transform-data.csv', index=False)
-
+        generic_type_df = df[df["Type"] == "generic"]
+        generic_type_df["Date"] = today.strftime("%Y-%m-%d")
+        os.makedirs("/workspaces/study_airflow/data/orchestrated/", exist_ok=True)
+        generic_type_df.to_csv(
+            "/workspaces/study_airflow/data/orchestrated/airflow-transform-data.csv",
+            index=False,
+        )
 
     transform_task = PythonOperator(
-      task_id='transform_task',
-      python_callable=transform_data,
-      dag=dag)
+        task_id="transform_task", python_callable=transform_data, dag=dag
+    )
 
     create_path >> extract_task >> transform_task
