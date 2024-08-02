@@ -28,11 +28,11 @@ RUN pip install apache-airflow[virtualenv,postgres]==${AIRFLOW_VERSION} --constr
 RUN echo 'alias la="ls -lah"' >> /home/vscode/.bashrc \
     && echo "complete -W \"\`grep -oE '^[a-zA-Z0-9_.-]+:([^=]|$)' ?akefile | sed 's/[^a-zA-Z0-9_.-]*$//'\`\" make" >> /home/vscode/.bashrc
 
+COPY requirements.txt /tmp/pip-tmp/
 
-# [Optional] If your requirements rarely change, uncomment this section to add them to the image.
-# COPY requirements.txt /tmp/pip-tmp/
-# RUN pip3 --disable-pip-version-check --no-cache-dir install -r /tmp/pip-tmp/requirements.txt \
-#    && rm -rf /tmp/pip-tmp
+RUN pip install pip --upgrade && \
+    pip --no-cache-dir install -r /tmp/pip-tmp/requirements.txt && \
+    rm -rf /tmp/pip-tmp
 
 # [Optional] Uncomment this section to install additional OS packages.
 # RUN apt-get update && export DEBIAN_FRONTEND=noninteractive \
