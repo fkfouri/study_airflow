@@ -18,8 +18,8 @@ default_args = {
 }
 
 with DAG(
-    dag_id="exo_01",
-    description="Exo 01",
+    dag_id="step_01",
+    description="Step 01",
     schedule_interval=None,
     default_args=default_args,
     tags=["fabio"],

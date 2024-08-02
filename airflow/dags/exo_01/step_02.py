@@ -34,8 +34,8 @@ def save_dataframe_to_postgres():
     print("Dados salvos com sucesso no PostgreSQL!")
 
 with DAG(
-    dag_id="exo_02",
-    description="Exo 02",
+    dag_id="step_02",
+    description="Step 02",
     schedule_interval=None,
     default_args=default_args,
     tags=["fabio"],
